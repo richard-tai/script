@@ -1,0 +1,17 @@
+
+# progress report
+step=0
+steps=5
+echo -e "\n[$((++step))/${steps}] do somethine"
+
+# get result status
+ls -al
+ret=$(echo $?)
+if [ ${ret} != "0" ]; then
+        exit
+fi
+
+# timing
+start_time=$(date +%s)
+ls -al
+echo "cost $(($(date +%s) - ${start_time})) seconds totally"

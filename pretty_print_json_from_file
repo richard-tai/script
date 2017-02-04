@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+
+import sys
+import json
+from pprint import pprint
+import chardet
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+if len(sys.argv) < 2:
+        print "usage: $0 <file>"
+        sys.exit()
+
+input_file = sys.argv[1]
+input_data = open(input_file).read()
+
+input_charset = chardet.detect(input_data)
+input_encode =  input_charset['encoding']
+print input_charset
+
+utf8_data = input_data.decode(input_encode).encode('utf8')
+
+json = json.loads(utf8_data)
+pprint(json)
+

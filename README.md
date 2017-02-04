@@ -1,1 +1,2 @@
 # script
+useful script snippets
