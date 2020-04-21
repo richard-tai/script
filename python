@@ -1,0 +1,61 @@
+def get_random_str(length=10, num=1):
+    random_len = 10
+    for i in range(num):
+        if length <= random_len:
+            yield ''.join(random.sample(string.ascii_letters + string.digits, length))
+        else:
+            yield '*'*(length-random_len) + ''.join(random.sample(string.ascii_letters + string.digits, random_len))
+
+
+def raise_exception(fn):
+    def wrapper(*args, **kw):
+        try:
+            fn(*args, **kw)
+        except Exception:
+            traceback.print_exc()
+            raise Exception("fail")
+    return wrapper
+    
+    
+class ExceptionThread(Thread):
+    def run(self):
+        self.exc = None
+        try:
+            if hasattr(self, '_Thread__target'):
+                # Thread uses name mangling prior to Python 3.
+                self.ret = self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
+            else:
+                self.ret = self._target(*self._args, **self._kwargs)
+        except BaseException as e:
+            self.exc = e
+
+    def join(self):
+        Thread.join(self)
+        if self.exc:
+            raise self.exc
+        return self.ret
+
+
+def get_last_line_of_file(file_name, size_limit=-1):
+    if not file_name or not os.path.exists(file_name):
+        return ""
+    file_size = os.path.getsize(file_name)
+    with open(file_name, 'rb') as f:
+        if file_size >= 500:
+            off = -50
+            while True:
+                f.seek(off, 2)
+                lines = f.readlines()
+                if len(lines) >= 2:
+                    return lines[-1].decode()
+                if off == file_size:
+                    return lines[-1].decode()
+                if -off > size_limit > 0:
+                    return lines[-1].decode()[-size_limit:]
+
+                off *= 2
+                if -off > file_size:
+                    off = -file_size
+        else:
+            lines = f.readlines()
+            return lines[-1].decode()
