@@ -1,0 +1,7 @@
+adb connect 0.0.0.0:5565
+adb -s 0.0.0.0:5565 install -g <apk>
+
+aapt d badging <apk> | grep "package: name=" | awk -F "'" '{print $2}'
+aapt d badging <apk> | grep "launchable-activity:" | awk -F "'" '{print $2}'
+
+adb -s 0.0.0.0:5565 shell "am start -S -W <package name>/<main activiry>"
